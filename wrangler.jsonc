@@ -11,7 +11,7 @@
 		"enabled": true
 	},
 	"vars": {
-		"OPENROUTER_API_KEY": "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"
+		"OPENROUTER_API_KEY": ""
 	}
 	/**
 	 * Smart Placement
