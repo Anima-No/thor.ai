@@ -193,6 +193,32 @@ for await (const chunk of completion) {
 
 您可以在 Cloudflare Dashboard 中为您的 Worker 设置自定义域名。请参考 [Cloudflare 文档](https://developers.cloudflare.com/workers/configuration/routing/custom-domains/)。
 
+### 如何配置 Cline VSCode 插件使用 Thor.AI API 代理？
+
+[Cline](https://cline.bot/) 是一个强大的 VSCode 插件，可以帮助您在编码过程中使用 AI 辅助。您可以通过以下步骤配置 Cline 使用 Thor.AI API 代理：
+
+1. 在 VSCode 中安装 [Cline 插件](https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev)
+
+2. 点击左侧的 Cline 图标打开 Cline 侧边栏
+
+3. 点击设置图标（⚙️）打开 Cline 设置
+
+4. 在 API 提供商选项中，选择 **"OpenAI-Compatible"**
+
+5. 在配置表单中填写以下信息：
+   - **Base URL**: `https://thor-proxy.<your-subdomain>.workers.dev/v1`
+   - **API Key**: 输入您的 OpenRouter API 密钥
+   - **Model ID**: 输入您想要使用的模型，例如 `openai/gpt-4o`、`anthropic/claude-3-opus` 等
+
+6. 点击 "Let's go" 或 "Save" 按钮保存配置
+
+注意：
+- 确保将 Base URL 设置为您的 Thor.AI API 代理 URL，包含 `/v1` 路径
+- 将 API Key 设置为您的 OpenRouter API 密钥
+- 在 Model ID 中输入您想要使用的模型，使用 OpenRouter 支持的任何模型
+
+有关更详细的配置说明和高级用法，请参考 [与 Cline VSCode 插件集成](examples/cline-vscode-integration.md) 文档。
+
 ## 许可证
 
 MIT

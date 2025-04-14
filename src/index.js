@@ -64,7 +64,7 @@ export default {
           '模型格式': '支持的模型格式包括: openai/gpt-4o, google/gemini-pro, anthropic/claude-3-opus 等',
           '自动添加前缀': '如果模型名称不包含"/"，将自动添加"openai/"前缀，例如gpt-4变为openai/gpt-4',
           '流式响应': '支持流式响应，设置 stream: true',
-          'Continue插件配置': '在Continue插件中选择OpenAI Compatible，设置API Base URL为此服务地址，API Key为您的OpenRouter API Key',
+          'Cline插件配置': '在Cline插件中选择OpenAI-Compatible，设置Base URL为此服务地址，API Key为您的OpenRouter API Key，Model ID为您想要使用的模型',
           '示例': 'curl -H "Authorization: Bearer your_openrouter_api_key" -H "Content-Type: application/json" -d \'{\'model\':\'google/gemini-pro\', \'messages\':[{\'role\':\'user\',\'content\':\'hello\'}]}\' https://thor-proxy.lll01ltt77.workers.dev/v1/chat/completions'
         }
       }), {
