@@ -55,6 +55,7 @@ export default {
         endpoints: {
           '/v1/chat/completions': 'OpenAI兼容的聊天完成API',
           '/v1/api/chat': 'Ollama兼容的聊天API',
+          '/v1/api/tags': '获取可用模型列表',
           '/health': '健康检查端点'
         },
         usage: {
@@ -81,14 +82,17 @@ export default {
       const urlParams = new URL(request.url).searchParams;
       const modelFromUrl = urlParams.get('model');
 
-      // 获取请求体
-      let body;
-      try {
-        body = await request.clone().json();
-      } catch (e) {
-        console.error('解析请求体错误:', e);
-        // 如果无法解析JSON，创建一个空对象
-        body = {};
+      // 获取请求体 - 只有在POST/PUT/PATCH请求时才尝试解析JSON
+      let body = {};
+      if (['POST', 'PUT', 'PATCH'].includes(request.method)) {
+        try {
+          body = await request.clone().json();
+        } catch (e) {
+          console.error('解析请求体错误:', e);
+          // 如果无法解析JSON，保持空对象
+        }
+      } else {
+        console.log('GET请求，不尝试解析请求体');
       }
 
       // 优先使用URL中的模型，其次是请求体中的模型，最后是默认模型
@@ -347,20 +351,53 @@ export default {
       }
     }
 
+        // 处理 /v1/api/tags 端点 - 返回可用模型列表
+    if (path === '/v1/api/tags') {
+      console.log('处理 /v1/api/tags 请求');
+
+      // 创建一个模拟的标签/模型列表响应
+      const tagsResponse = {
+        object: "list",
+        data: [
+          { id: "openai/gpt-4o", name: "GPT-4o", type: "model" },
+          { id: "openai/gpt-4-turbo", name: "GPT-4 Turbo", type: "model" },
+          { id: "openai/gpt-3.5-turbo", name: "GPT-3.5 Turbo", type: "model" },
+          { id: "anthropic/claude-3-opus", name: "Claude 3 Opus", type: "model" },
+          { id: "anthropic/claude-3-sonnet", name: "Claude 3 Sonnet", type: "model" },
+          { id: "anthropic/claude-3-haiku", name: "Claude 3 Haiku", type: "model" },
+          { id: "meta-llama/llama-3-70b-instruct", name: "Llama 3 70B", type: "model" },
+          { id: "mistral/mistral-large", name: "Mistral Large", type: "model" },
+          { id: "deepseek/deepseek-r1-zero", name: "DeepSeek R1 Zero", type: "model" },
+          { id: config.defaultModel, name: "Default Model", type: "model" }
+        ]
+      };
+
+      return new Response(JSON.stringify(tagsResponse), {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json',
+          ...corsHeaders
+        }
+      });
+    }
+
     // 处理所有以/v1开头的请求
-    if (path.startsWith('/v1') && path !== '/v1/chat/completions' && path !== '/v1/api/chat') {
+    if (path.startsWith('/v1') && path !== '/v1/chat/completions' && path !== '/v1/api/chat' && path !== '/v1/api/tags') {
       // 获取URL查询参数
       const urlParams = new URL(request.url).searchParams;
       const modelFromUrl = urlParams.get('model');
 
-      // 获取请求体
-      let body;
-      try {
-        body = await request.clone().json();
-      } catch (e) {
-        console.error('解析请求体错误:', e);
-        // 如果没有请求体或不是JSON，创建一个空对象
-        body = {};
+      // 获取请求体 - 只有在POST/PUT/PATCH请求时才尝试解析JSON
+      let body = {};
+      if (['POST', 'PUT', 'PATCH'].includes(request.method)) {
+        try {
+          body = await request.clone().json();
+        } catch (e) {
+          console.error('解析请求体错误:', e);
+          // 如果无法解析JSON，保持空对象
+        }
+      } else {
+        console.log('GET请求，不尝试解析请求体');
       }
 
       // 优先使用URL中的模型，其次是请求体中的模型，最后是默认模型

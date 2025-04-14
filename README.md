@@ -158,6 +158,8 @@ const config = {
 ## API 端点
 
 - `/v1/chat/completions` - OpenAI 兼容的聊天完成 API
+- `/v1/api/chat` - Ollama 兼容的聊天 API
+- `/v1/api/tags` - 获取可用模型列表（用于客户端的模型选择器）
 - `/health` - 健康检查端点
 - `/` - API 信息
 
@@ -192,6 +194,34 @@ for await (const chunk of completion) {
 ### 如何设置自定义域名？
 
 您可以在 Cloudflare Dashboard 中为您的 Worker 设置自定义域名。请参考 [Cloudflare 文档](https://developers.cloudflare.com/workers/configuration/routing/custom-domains/)。
+
+### 如何获取可用模型列表？
+
+您可以使用 `/v1/api/tags` 端点获取可用模型列表，这对于需要在客户端显示模型选择器的应用程序非常有用：
+
+```bash
+curl https://thor-proxy.<your-subdomain>.workers.dev/v1/api/tags
+```
+
+响应示例：
+
+```json
+{
+  "object": "list",
+  "data": [
+    { "id": "openai/gpt-4o", "name": "GPT-4o", "type": "model" },
+    { "id": "openai/gpt-4-turbo", "name": "GPT-4 Turbo", "type": "model" },
+    { "id": "openai/gpt-3.5-turbo", "name": "GPT-3.5 Turbo", "type": "model" },
+    { "id": "anthropic/claude-3-opus", "name": "Claude 3 Opus", "type": "model" },
+    { "id": "anthropic/claude-3-sonnet", "name": "Claude 3 Sonnet", "type": "model" },
+    { "id": "anthropic/claude-3-haiku", "name": "Claude 3 Haiku", "type": "model" },
+    { "id": "meta-llama/llama-3-70b-instruct", "name": "Llama 3 70B", "type": "model" },
+    { "id": "mistral/mistral-large", "name": "Mistral Large", "type": "model" },
+    { "id": "deepseek/deepseek-r1-zero", "name": "DeepSeek R1 Zero", "type": "model" },
+    { "id": "deepseek/deepseek-r1-zero:free", "name": "Default Model", "type": "model" }
+  ]
+}
+```
 
 ### 如何配置 Cline VSCode 插件使用 Thor.AI API 代理？
 
