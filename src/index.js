@@ -214,6 +214,36 @@ export default {
         if (!response.ok) {
           console.error('OpenRouter响应错误:', response.status, responseText);
 
+          // 分析错误类型
+          let errorMessage = '';
+          let errorDetails = '';
+
+          // 尝试解析错误响应
+          try {
+            const errorJson = JSON.parse(responseText);
+            errorDetails = errorJson.error?.message || errorJson.message || errorJson.error || responseText;
+          } catch (e) {
+            errorDetails = responseText.substring(0, 200);
+          }
+
+          // 根据状态码判断错误类型
+          if (response.status === 401 || response.status === 403) {
+            errorMessage = `API Key错误或无效：请检查您的OpenRouter API Key是否正确。状态码: ${response.status}`;
+            console.error('API Key错误:', errorDetails);
+          } else if (response.status === 404) {
+            errorMessage = `模型不存在或无法访问：请检查模型 ID "${body.model}"是否正确。状态码: ${response.status}`;
+            console.error('模型错误:', errorDetails);
+          } else if (response.status === 429) {
+            errorMessage = `请求频率超限或配额用尽：请稍后再试。状态码: ${response.status}`;
+            console.error('频率限制:', errorDetails);
+          } else {
+            errorMessage = `OpenRouter响应错误，状态码: ${response.status}`;
+            console.error('其他错误:', errorDetails);
+          }
+
+          // 添加错误详情
+          errorMessage += `\n\n错误详情: ${errorDetails}`;
+
           // 创建一个符合Ollama期望的错误响应
           const errorResponse = {
             id: `error-${Date.now()}`,
@@ -224,7 +254,7 @@ export default {
               index: 0,
               message: {
                 role: 'assistant',
-                content: `错误: ${response.status} - ${responseText.substring(0, 100)}`
+                content: errorMessage
               },
               finish_reason: 'stop'
             }],
@@ -454,6 +484,36 @@ export default {
         if (!response.ok) {
           console.error('OpenRouter响应错误:', response.status, responseText);
 
+          // 分析错误类型
+          let errorMessage = '';
+          let errorDetails = '';
+
+          // 尝试解析错误响应
+          try {
+            const errorJson = JSON.parse(responseText);
+            errorDetails = errorJson.error?.message || errorJson.message || errorJson.error || responseText;
+          } catch (e) {
+            errorDetails = responseText.substring(0, 200);
+          }
+
+          // 根据状态码判断错误类型
+          if (response.status === 401 || response.status === 403) {
+            errorMessage = `API Key错误或无效：请检查您的OpenRouter API Key是否正确。状态码: ${response.status}`;
+            console.error('API Key错误:', errorDetails);
+          } else if (response.status === 404) {
+            errorMessage = `模型不存在或无法访问：请检查模型 ID "${body.model}"是否正确。状态码: ${response.status}`;
+            console.error('模型错误:', errorDetails);
+          } else if (response.status === 429) {
+            errorMessage = `请求频率超限或配额用尽：请稍后再试。状态码: ${response.status}`;
+            console.error('频率限制:', errorDetails);
+          } else {
+            errorMessage = `OpenRouter响应错误，状态码: ${response.status}`;
+            console.error('其他错误:', errorDetails);
+          }
+
+          // 添加错误详情
+          errorMessage += `\n\n错误详情: ${errorDetails}`;
+
           // 创建一个符合Ollama期望的错误响应
           const errorResponse = {
             id: `error-${Date.now()}`,
@@ -464,7 +524,7 @@ export default {
               index: 0,
               message: {
                 role: 'assistant',
-                content: `错误: ${response.status} - ${responseText.substring(0, 100)}`
+                content: errorMessage
               },
               finish_reason: 'stop'
             }],
