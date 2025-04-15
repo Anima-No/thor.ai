@@ -5,19 +5,28 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "thor-proxy",
+	// 自定义域名配置
+	"routes": [
+	  { "pattern": "thor-ai.chat/*", "zone_name": "thor-ai.chat" }
+	],
 	"main": "src/index.js",
 	"compatibility_date": "2025-04-14",
 	"observability": {
 		"enabled": true
 	},
+	// 免费计划不支持CPU限制设置
+	// "limits": {
+	//   "cpu_ms": 50
+	// },
 	"vars": {
 		"OPENROUTER_API_KEY": ""
-	}
+	},
 	/**
 	 * Smart Placement
 	 * Docs: https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
 	 */
-	// "placement": { "mode": "smart" },
+	// 禁用智能放置，使用默认的全球分布
+	// "placement": { "mode": "smart" }
 
 	/**
 	 * Bindings

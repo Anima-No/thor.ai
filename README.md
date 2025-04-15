@@ -15,12 +15,12 @@ Thor.AI API 代理是一个轻量级的 API 代理服务，它允许您通过 Op
 
 ### 使用 API
 
-API 端点：`https://thor-proxy.<your-subdomain>.workers.dev/v1`
+API 端点：`https://thor-ai.chat/v1`
 
 #### 使用 curl
 
 ```bash
-curl https://thor-proxy.<your-subdomain>.workers.dev/v1/chat/completions \
+curl https://thor-ai.chat/v1/chat/completions \
   -H "Content-Type: application/json" \
   -d '{
     "model": "openai/gpt-4o",
@@ -39,8 +39,8 @@ curl https://thor-proxy.<your-subdomain>.workers.dev/v1/chat/completions \
 from openai import OpenAI
 
 client = OpenAI(
-  base_url='https://thor-proxy.<your-subdomain>.workers.dev/v1',
-  api_key='any-value',  # 可以是任何值，因为验证由 OpenRouter 处理
+  base_url='https://thor-ai.chat/v1',
+  api_key='your-openrouter-api-key'  # 使用您的 OpenRouter API 密钥
 )
 
 response = client.chat.completions.create(
@@ -200,7 +200,7 @@ for await (const chunk of completion) {
 您可以使用 `/v1/api/tags` 端点获取可用模型列表，这对于需要在客户端显示模型选择器的应用程序非常有用：
 
 ```bash
-curl https://thor-proxy.<your-subdomain>.workers.dev/v1/api/tags
+curl https://thor-ai.chat/v1/api/tags
 ```
 
 响应示例：

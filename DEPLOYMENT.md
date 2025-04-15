@@ -127,7 +127,7 @@ Deployed thor-proxy to https://thor-proxy.<your-subdomain>.workers.dev
 使用 curl 测试您的 API 代理是否正常工作：
 
 ```bash
-curl https://thor-proxy.<your-subdomain>.workers.dev/health
+curl https://thor-ai.chat/health
 ```
 
 应该返回：
@@ -139,7 +139,7 @@ curl https://thor-proxy.<your-subdomain>.workers.dev/health
 然后测试聊天完成 API：
 
 ```bash
-curl https://thor-proxy.<your-subdomain>.workers.dev/v1/chat/completions \
+curl https://thor-ai.chat/v1/chat/completions \
   -H "Content-Type: application/json" \
   -d '{
     "model": "openai/gpt-4o",
@@ -161,7 +161,7 @@ curl https://thor-proxy.<your-subdomain>.workers.dev/v1/chat/completions \
 #### 使用 curl
 
 ```bash
-curl https://thor-proxy.<your-subdomain>.workers.dev/v1/chat/completions \
+curl https://thor-ai.chat/v1/chat/completions \
   -H "Content-Type: application/json" \
   -d '{
     "model": "openai/gpt-4o",
@@ -180,8 +180,8 @@ curl https://thor-proxy.<your-subdomain>.workers.dev/v1/chat/completions \
 from openai import OpenAI
 
 client = OpenAI(
-  base_url='https://thor-proxy.<your-subdomain>.workers.dev/v1',
-  api_key='any-value',  # 可以是任何值，因为验证由 OpenRouter 处理
+  base_url='https://thor-ai.chat/v1',
+  api_key='your-openrouter-api-key'  # 使用您的 OpenRouter API 密钥
 )
 
 response = client.chat.completions.create(
@@ -199,8 +199,8 @@ print(response.choices[0].message.content)
 import OpenAI from 'openai';
 
 const openai = new OpenAI({
-  baseURL: 'https://thor-proxy.<your-subdomain>.workers.dev/v1',
-  apiKey: 'any-value',  // 可以是任何值，因为验证由 OpenRouter 处理
+  baseURL: 'https://thor-ai.chat/v1',
+  apiKey: 'your-openrouter-api-key',  // 使用您的 OpenRouter API 密钥
 });
 
 const completion = await openai.chat.completions.create({
@@ -217,12 +217,12 @@ console.log(completion.choices[0].message.content);
 
 ```bash
 # Windows (PowerShell)
-$env:OPENAI_API_BASE="https://thor-proxy.<your-subdomain>.workers.dev/v1"
-$env:OPENAI_API_KEY="any-value"
+$env:OPENAI_API_BASE="https://thor-ai.chat/v1"
+$env:OPENAI_API_KEY="your-openrouter-api-key"
 
 # Linux/macOS
-export OPENAI_API_BASE="https://thor-proxy.<your-subdomain>.workers.dev/v1"
-export OPENAI_API_KEY="any-value"
+export OPENAI_API_BASE="https://thor-ai.chat/v1"
+export OPENAI_API_KEY="your-openrouter-api-key"
 ```
 
 #### 使用 Ollama 命令行
@@ -261,8 +261,8 @@ from langchain.schema import HumanMessage
 
 chat = ChatOpenAI(
     model="openai/gpt-4o",
-    openai_api_base="https://thor-proxy.<your-subdomain>.workers.dev/v1",
-    openai_api_key="any-value"
+    openai_api_base="https://thor-ai.chat/v1",
+    openai_api_key="your-openrouter-api-key"
 )
 
 response = chat([HumanMessage(content="你好，请介绍一下自己")])
@@ -276,8 +276,8 @@ from llama_index.llms import OpenAI
 
 llm = OpenAI(
     model="openai/gpt-4o",
-    api_base="https://thor-proxy.<your-subdomain>.workers.dev/v1",
-    api_key="any-value"
+    api_base="https://thor-ai.chat/v1",
+    api_key="your-openrouter-api-key"
 )
 
 response = llm.complete("你好，请介绍一下自己")
@@ -320,12 +320,20 @@ const corsHeaders = {
 
 ### 自定义域名
 
-要为您的 API 代理设置自定义域名，请按照以下步骤操作：
+本项目已配置使用自定义域名 `thor-ai.chat`。如果您想使用自己的域名，请按照以下步骤操作：
 
 1. 在 Cloudflare Dashboard 中添加您的域名（如果尚未添加）。
-2. 在 Workers 部分，找到您的 Worker，然后点击"触发器"选项卡。
-3. 点击"添加自定义域"，然后输入您想要使用的域名（例如 `api.yourdomain.com`）。
-4. 按照提示完成 DNS 设置。
+2. 在 `wrangler.jsonc` 文件中修改域名配置：
+   ```jsonc
+   "routes": [
+     { "pattern": "your-domain.com/*", "zone_name": "your-domain.com" }
+   ],
+   ```
+3. 重新部署 Worker：
+   ```bash
+   npm run deploy
+   ```
+4. 在 Cloudflare Dashboard 中的 Workers 部分，确认域名已正确配置。
 
 ## 故障排除
 
